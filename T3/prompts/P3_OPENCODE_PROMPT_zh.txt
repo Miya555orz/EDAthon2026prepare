@@ -1,0 +1,23 @@
+你正在做 EDAthon2026 P3 global_place.tcl，case_id=<CASE_ID>。请使用 edathon-p3-fast skill。
+
+硬性边界：
+- 当前 OpenCode 工作目录应为 /workspace/work/opencode_cases/P3/<CASE_ID>。
+- 不要修改 /workspace/problems/**/data。
+- 只编辑当前目录的 global_place.tcl；通过后再 sync 到 submission。
+- 提交脚本必须是完整 ORFS global_place stage，不是 Tcl 片段。
+- 必须 load_design 3_2_place_iop.odb 2_floorplan.sdc，必须执行标准单元 global_placement，必须 write_db $::env(RESULTS_DIR)/3_3_place_gp.odb。
+- 不要改宏、IO、die/core、顶层设计名；不要提交 ODB/SDC/日志/metrics。
+
+先读 OPENCODE_TASK.md、README_INPUTS.md、RUN_P3.md、/workspace/problems/P3/README_zh.md、/workspace/problems/P3/SCORING_zh.md，以及当前目录 global_place.tcl。
+
+固定快速循环：
+1. bash /workspace/p3_eval_case.sh <CASE_ID> struct
+2. 如果官方 ORFS bundle 可用：
+   export CHIPBENCH_ORFS_FLOW_DIR=/official-bundle/flow
+   export CHIPBENCH_DESIGN_HOME=/official-bundle/designs
+   bash /workspace/p3_eval_case.sh <CASE_ID> place
+3. 通过后：
+   python3 /workspace/toolkit/opencode_harness/edathon_harness.py sync
+   python3 /workspace/toolkit/tools/check.py --problem P3
+
+完成时报告：case_id、策略摘要、写入文件、struct/place/status 命令和 exit code、仍不确定的官方 hidden score 风险。

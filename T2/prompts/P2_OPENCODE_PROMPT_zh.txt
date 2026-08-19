@@ -1,0 +1,24 @@
+你正在做 EDAthon2026 P2 RTL PPA 优化，case_id=<CASE_ID>。请使用 edathon-p2-fast skill。
+
+当前工作目录应为 /workspace/work/opencode_cases/P2/<CASE_ID>。
+不要修改 /workspace/problems/**/data。
+只编辑当前目录的 candidate.v。
+
+硬性要求：
+- candidate.v 必须定义 module opt_model
+- 端口与 header.v 完全一致
+- helper module 必须写在同文件内，且不能与 unopt_model/testbench 模块重名
+- correctness 是硬门槛；correctness.ok=false 时不要讨论 area
+
+先读 OPENCODE_TASK.md、prompt.txt、header.v、unopt.v、testbench.v、candidate.v、/workspace/problems/P2/README_zh.md、/workspace/problems/P2/SCORING_zh.md。
+
+固定循环：
+1. 每轮只做一个语义保持优化。
+2. bash /workspace/p2_eval_case.sh <CASE_ID> fast
+3. 只有 fast 返回 0 且 correctness.ok=true，才继续优化 area。
+4. 确认后：
+   bash /workspace/p2_eval_case.sh <CASE_ID> status
+
+不要 sweep 很多版本；不要重写 evaluator；不要超过 3 分钟无输出。
+
+完成时报告：case_id、candidate.v 改动、correctness.ok、public mapped area/baseline area、fast/status exit code、public area 不是官方完整 PPA hidden score。
