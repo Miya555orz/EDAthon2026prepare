@@ -2,6 +2,49 @@
 
 这套文件把 P2 做成固定流程：准备 case → 打开 OpenCode → 粘同一份 prompt → fast eval → sync/status。
 
+## 小白防呆启动步骤
+
+PowerShell 启动本地 Docker：
+
+```powershell
+$Ws = "D:\edathon-problems-toolkit-20260819"
+$Img = "edathon-openroad-tools:local"
+docker run --rm -it `
+  --name edathon-t2 `
+  --mount "type=bind,source=$Ws,target=/workspace" `
+  --workdir /workspace `
+  $Img `
+  bash
+```
+
+如果容器已经开着：
+
+```powershell
+docker exec -it edathon-t2 bash
+```
+
+容器内打开 OpenCode 前：
+
+```bash
+cd /workspace
+bash /workspace/p2_env_check.sh
+bash /workspace/p2_cases.sh
+bash /workspace/p2_prepare_case.sh int_sqrt2
+cd /workspace/work/opencode_cases/P2/int_sqrt2
+bash /workspace/toolkit/opencode_harness/opencode_once.sh
+bash /workspace/p2_prompt_for_case.sh int_sqrt2
+```
+
+把 prompt 粘给 OpenCode。OpenCode 完成后：
+
+```bash
+bash /workspace/p2_eval_case.sh int_sqrt2 fast
+bash /workspace/p2_eval_case.sh int_sqrt2 json
+bash /workspace/p2_eval_case.sh int_sqrt2 status
+```
+
+P2 最常见错误：`candidate.v` 里没有 `module opt_model`，或者端口和 `header.v` 不一致。correctness 没过时不要看 area。
+
 ## 安装位置
 
 宿主机保存位置：

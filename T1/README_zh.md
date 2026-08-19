@@ -263,3 +263,51 @@ run_direct.sh
 ```
 
 本地镜像只是 smoke-test 镜像。最终比赛成绩以官方远程 evaluator 为准。
+# 小白防呆启动步骤
+
+如果你不知道从哪里开始，按这段走。
+
+PowerShell 启动本地 Docker：
+
+```powershell
+$Ws = "D:\edathon-problems-toolkit-20260819"
+$Img = "edathon-openroad-tools:local"
+docker run --rm -it `
+  --name edathon-t1 `
+  --mount "type=bind,source=$Ws,target=/workspace" `
+  --workdir /workspace `
+  $Img `
+  bash
+```
+
+如果容器已经开着：
+
+```powershell
+docker exec -it edathon-t1 bash
+```
+
+容器内：
+
+```bash
+cd /workspace
+bash /workspace/p1_env_check.sh
+```
+
+做一个 case 的基本节奏：
+
+```bash
+cd /workspace
+bash /workspace/p1_init_case.sh <case_id>
+bash /workspace/p1_prompt_for_case.sh <case_id>
+```
+
+把 prompt 粘给 OpenCode。OpenCode 完成后：
+
+```bash
+TIMEOUT_SEC=30 bash /workspace/p1_probe_case.sh <case_id>
+TIMEOUT_SEC=240 bash /workspace/p1_full_case.sh <case_id>
+python3 /workspace/toolkit/tools/check.py --problem P1
+python3 /workspace/toolkit/tools/status.py --problem P1
+```
+
+P1 只看官方 testbench 是否通过。不要提交 prompt、log、metadata；只提交 `metadata.json` 中 `target_files` 指定的 RTL。

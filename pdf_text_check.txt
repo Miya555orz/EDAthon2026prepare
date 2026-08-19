@@ -1,0 +1,204 @@
+EDAthon2026 mobile checklist - page 1
+ EDAthon2026 明日比赛流程 + 出行速查
+ 手机版 | 2026-08-20 香港城市大学 | 睡前版
+最重要：正式评分只看远程 Docker 容器里的 /workspace/submission/。机房电脑和远
+程容器磁盘互不相通，本地做完必须上传，或直接在远程容器里做。
+0. OpenRouter API 是干啥的
+OpenRouter API key 是 OpenCode 调用大模型的钥匙：OpenCode -> OpenRouter ->
+DeepSeek V4 Flash。它不是 SSH 密码、不是 Docker
+密码、不是提交入口、不是评分器。比赛环境已经配置好，不要运行
+/connect，不要自己粘 key，不要改模型配置。
+# 只需要检查 key 是否可用：
+cd /workspace
+python3 /workspace/toolkit/tools/check_api_key.py
+# 然后打开 OpenCode：
+opencode
+1. 明天你会拿到什么环境
+环境
+用途
+是否计分
+机房电脑 A/B
+读题、改 case、跑公开自测
+否，除非上传到远程容器
+远程 Docker 容器
+正式答案所在地，也可以直接开发
+是，只收集 /workspace/submission/
+• 每队可用两台机房电脑，并通过 SSH 登录同一个远程 Docker 容器。
+• 评分时仅以远程 Docker 容器中的答案为准。
+• 每个座位有一个英规电源插口；英规转接头自备。
+2. /workspace 到底在哪里
+正式比赛里，/workspace 是远程 Docker 容器内部的工作目录。VS Code Remote SSH
+连接后，应打开远程文件夹 /workspace。
+你本地练习时的 Windows 题目包目录 D:\edathon-problems-toolkit-20260819，通过
+docker --mount 映射到容器内 /workspace。也就是说，本地 Docker 里看到的
+/workspace 对应 Windows 上这个题目包总文件夹。正式远程容器里的 /workspace
+则在远程机器上，不等于你的 Windows D 盘。
+$Ws = "D:\edathon-problems-toolkit-20260819"
+docker run --mount "type=bind,source=$Ws,target=/workspace" ...
+# 容器内：
+cd /workspace
+2.5 PowerShell 本地练习命令
+\n---PAGE---\nEDAthon2026 mobile checklist - page 2
+# 启动 Docker Desktop
+Start-Process "C:\Program Files\Docker\Docker\Docker Desktop.exe"
+# 检查 Docker
+docker version
+docker images
+# 启动本地容器，把 D 盘题目包映射成 /workspace
+$Ws = "D:\edathon-problems-toolkit-20260819"
+$Img = "edathon-openroad-tools:local"
+docker run --rm -it `
+--name edathon-work `
+--mount "type=bind,source=$Ws,target=/workspace" `
+--workdir /workspace `
+$Img `
+bash
+# 如果容器已经开着，新开 PowerShell 进入：
+docker ps
+docker exec -it edathon-work bash
+3. 远程连接和开赛检查
+• SSH 端口 = 2200 + 队伍编号，例如 team07 -> 2207。
+• 主机：edathon.cs.cityu.edu.hk；用户：root。
+• 密码在桌面 EDAthon/ssh_password.txt；OpenRouter key 在桌面
+EDAthon/openrouter_api_key.txt。
+• VS Code 安装 Remote - SSH 后连接远程容器，打开 /workspace。
+# PowerShell/终端直连：
+ssh -p 22XX root@edathon.cs.cityu.edu.hk
+# VS Code 安装 Remote SSH：
+code --install-extension ms-vscode-remote.remote-ssh
+notepad $env:USERPROFILE\.ssh\config
+# SSH config 内容：
+Host edathon-remote
+HostName edathon.cs.cityu.edu.hk
+User root
+Port 22XX
+cd /workspace
+ls problems submission toolkit
+cd /workspace/toolkit
+python3 tools/info.py
+python3 tools/check_api_key.py
+opencode --version
+不要运行 /connect，不要自己粘 API key，不要改模型配置。OpenCode 应显示
+OpenRouter / DeepSeek V4 Flash。
+\n---PAGE---\nEDAthon2026 mobile checklist - page 3
+4. OpenCode 使用方式
+cd /workspace
+python3 /workspace/toolkit/tools/check_api_key.py
+opencode
+操作
+命令
+新会话
+/new
+换模型
+/models
+引用文件
+@path
+自己跑命令
+!command
+退出
+/exit 或 /q
+给 Agent
+任务时写清：题目/case、允许修改文件、最终提交路径、完成后检查命令。Agent
+的文字结论不能替代 check.py/status.py。
+\n---PAGE---\nEDAthon2026 mobile checklist - page 4
+5. 正式提交路径
+P1 /workspace/submission/P1/<case_id>/<target_path>
+P2 /workspace/submission/P2/<case_id>/candidate.v
+P3 /workspace/submission/P3/global_place.tcl
+/workspace/submission/P3/cases/<case_id>.tcl
+P4 /workspace/submission/P4/cases/<case_id>_repaired.py
+• 多余 README、日志、GDS、截图、压缩包不加分。
+• 缺一个 case 或该 case 不合法，只是该 case 记 0，不会整题作废。
+• 建议不要把整个 task 目录拷进 submission。
+6. 四题快速工作流
+赛场上建议先运行一键安装辅助脚本。如果正式环境不允许使用自带辅助脚本，就退回官方 toolkit
+命令和题目 README。
+# PowerShell，在本地练习包安装：
+powershell -NoProfile -ExecutionPolicy Bypass -File
+"D:\EDAthon2026\EDAthon2026prepare\install_all_to_workspace.ps1" -WorkspacePath
+"D:\edathon-problems-toolkit-20260819"
+# 容器内检查：
+bash /workspace/p1_env_check.sh
+bash /workspace/p2_env_check.sh
+bash /workspace/p3_env_check.sh
+bash /workspace/p4_env_check.sh
+P1 - RTL 补全
+bash /workspace/p1_env_check.sh
+# 每个 case 以官方 testbench 仿真通过为目标。
+P2 - RTL PPA 优化
+bash /workspace/p2_env_check.sh
+bash /workspace/p2_prepare_case.sh int_sqrt2
+cd /workspace/work/opencode_cases/P2/int_sqrt2
+bash /workspace/p2_prompt_for_case.sh int_sqrt2
+bash /workspace/p2_eval_case.sh int_sqrt2 fast
+bash /workspace/p2_eval_case.sh int_sqrt2 status
+P2 correctness 是硬门槛；公开 mapped area 只是 proxy，不是官方完整 PPA hidden score。
+P3 - Global placement Tcl
+bash /workspace/p3_env_check.sh
+bash /workspace/p3_prepare_case.sh CAN-Bus
+cd /workspace/work/opencode_cases/P3/CAN-Bus
+bash /workspace/p3_prompt_for_case.sh CAN-Bus
+bash /workspace/p3_eval_case.sh CAN-Bus struct
+bash /workspace/p3_eval_\n---PAGE---\nEDAthon2026 mobile checklist - page 5
+P4 - ASAP7 Polygon DRC 修复
+bash /workspace/p4_env_check.sh
+bash /workspace/p4_prepare_case.sh Polygon117
+cd /workspace/work/opencode_cases/P4/Polygon117
+bash /workspace/p4_summary_case.sh Polygon117
+bash /workspace/p4_prompt_for_case.sh Polygon117
+bash /workspace/p4_eval_case.sh Polygon117 quick
+TIMEOUT_SEC=900 bash /workspace/p4_eval_case.sh Polygon117 full
+bash /workspace/p4_eval_case.sh Polygon117 status
+P4 建议 quick 过后跑 full DRC；full DRC 仍是本地 proxy，最终以官方 hidden evaluator 为准。
+7. 最后 30 分钟收尾
+python3 /workspace/toolkit/tools/check.py --problem P1
+python3 /workspace/toolkit/tools/check.py --problem P2
+python3 /workspace/toolkit/tools/check.py --problem P3
+python3 /workspace/toolkit/tools/check.py --problem P4
+python3 /workspace/toolkit/tools/status.py --problem P1
+python3 /workspace/toolkit/tools/status.py --problem P2
+python3 /workspace/toolkit/tools/status.py --problem P3
+python3 /workspace/toolkit/tools/status.py --problem P4
+find /workspace/submission -maxdepth 4 -type f | sort
+\n---PAGE---\nEDAthon2026 mobile checklist - page 6
+8. 群公告：明日赛程
+时间
+安排
+8:30am 前
+选手到达集结点
+9:00am - 3:00pm
+EDAthon 比赛
+12:00pm - 1:00pm
+午餐供应，自助餐，AC2 Canteen
+3:00pm - 3:30pm
+休息
+3:30pm - 5:00pm
+Mini-seminar
+5:00pm
+颁奖仪式
+6:00pm
+晚宴
+备注：群公告文字写作 12:00am-1:00pm，但结合“午餐”语境应为中午
+12:00pm-1:00pm；现场以工作人员通知为准。
+9. 交通与集结
+• 自行到达香港城市大学。
+• 交通参考：https://www.cityu.edu.hk/zh-cn/about/campus/getting-to-cityu
+• 到达香港城市大学后，按公告图片指引到邵逸夫图书馆门前集结点。
+• 集结点会有志愿者持导游旗，引导选手前往赛场 LI-4307。
+10. 餐饮、网络、报销
+餐饮
+• 午餐为自助餐，地点在赛场楼下 AC2 Canteen。
+• 届时会有工作人员带领大家去就餐。
+• 瓶装水全天供应。
+• 有特殊饮食需求的选手，公告要求在 2026-08-19 4:00pm 前联系 CityU 工作人员胡韬。
+网络
+• 校内扫描连接免费 WiFi：Wi-Fi.HK via CityU。
+报销
+• 每队交通住宿报销上限：HKD3000；广东省内参赛队为 HKD2500。
+• 赛场签到时提交纸质报销凭证，例如发票、收据。
+• 电子版报销凭证上传：https://send2me.cn/VZ1DiqWA/ShiY_p8Z2tnL5A
+11. 睡前记忆版
+\n---PAGE---\nEDAthon2026 mobile checklist - page 7
+8:30 前到邵逸夫图书馆门前集合；带英规转接头和报销纸质凭证；比赛时打开远程
+/workspace；每题答案写 /workspace/submission；最后跑
+check.py/status.py；不要只信 Agent 报告。

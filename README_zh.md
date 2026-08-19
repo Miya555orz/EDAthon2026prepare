@@ -22,6 +22,14 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "D:\EDAthon2026\EDAthon2026p
 
 ## 容器内最常用命令
 
+如果你完全不熟悉命令行，先看：
+
+```text
+D:\EDAthon2026\EDAthon2026prepare\BEGINNER_COMMANDS_zh.md
+```
+
+OpenRouter API key 只是 OpenCode 调用 DeepSeek V4 Flash 的模型钥匙；不是提交入口、不是评分器、不是 Docker/SSH 密码。比赛环境已经配置好，不要运行 `/connect`，不要自己粘 key。
+
 P1：
 
 ```bash

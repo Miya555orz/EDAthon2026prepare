@@ -2,6 +2,56 @@
 
 这套文件的目标是把 P3 做成和 T1 一样的固定流程：准备 case → 打开 OpenCode → 粘同一份 prompt → 跑固定 harness → sync → 官方提交格式检查。
 
+## 小白防呆启动步骤
+
+PowerShell 启动本地 Docker：
+
+```powershell
+$Ws = "D:\edathon-problems-toolkit-20260819"
+$Img = "edathon-openroad-tools:local"
+docker run --rm -it `
+  --name edathon-t3 `
+  --mount "type=bind,source=$Ws,target=/workspace" `
+  --workdir /workspace `
+  $Img `
+  bash
+```
+
+如果容器已经开着：
+
+```powershell
+docker exec -it edathon-t3 bash
+```
+
+容器内：
+
+```bash
+cd /workspace
+bash /workspace/p3_env_check.sh
+bash /workspace/p3_cases.sh
+bash /workspace/p3_prepare_case.sh CAN-Bus
+cd /workspace/work/opencode_cases/P3/CAN-Bus
+bash /workspace/toolkit/opencode_harness/opencode_once.sh
+bash /workspace/p3_prompt_for_case.sh CAN-Bus
+```
+
+把 prompt 粘给 OpenCode。OpenCode 完成后先跑快检查：
+
+```bash
+bash /workspace/p3_eval_case.sh CAN-Bus struct
+bash /workspace/p3_eval_case.sh CAN-Bus status
+```
+
+如果官方 ORFS bundle 可用，再跑真 placement smoke：
+
+```bash
+export CHIPBENCH_ORFS_FLOW_DIR=/official-bundle/flow
+export CHIPBENCH_DESIGN_HOME=/official-bundle/designs
+TIMEOUT_SEC=1800 bash /workspace/p3_eval_case.sh CAN-Bus place
+```
+
+P3 最常见错误：只写 Tcl 片段，而不是完整 `global_place.tcl` stage。`struct/status` 不是性能分，只是可评分/结构检查。
+
 ## 需要放到哪里
 
 在宿主机保存位置：
