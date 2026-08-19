@@ -1,0 +1,71 @@
+你正在解决 EDAthon 2026 P1 RTL 代码补全任务。
+
+本次只处理这个 case：
+
+CASE_ID = cvdp_copilot_serial_in_parallel_out_0011
+
+官方冻结题目文件位于：
+
+/workspace/problems/P1/data/cases/cvdp_copilot_serial_in_parallel_out_0011/
+
+最终答案文件只能写到：
+
+/workspace/submission/P1/cvdp_copilot_serial_in_parallel_out_0011/
+
+先阅读：
+
+/workspace/problems/P1/data/cases/cvdp_copilot_serial_in_parallel_out_0011/prompt.md
+/workspace/problems/P1/data/cases/cvdp_copilot_serial_in_parallel_out_0011/metadata.json
+/workspace/problems/P1/data/cases/cvdp_copilot_serial_in_parallel_out_0011/code/rtl/serial_in_parallel_out_8bit.sv
+/workspace/problems/P1/data/cases/cvdp_copilot_serial_in_parallel_out_0011/code/src/.env
+/workspace/problems/P1/data/cases/cvdp_copilot_serial_in_parallel_out_0011/code/src/test_runner.py
+/workspace/problems/P1/data/cases/cvdp_copilot_serial_in_parallel_out_0011/code/src/test_sipo.py
+
+不要修改 /workspace/problems/ 下的任何文件。
+
+把 metadata.json 中列出的 target RTL 文件复制到：
+
+/workspace/submission/P1/cvdp_copilot_serial_in_parallel_out_0011/rtl/serial_in_parallel_out_8bit.sv
+
+然后只编辑这个复制出来的 RTL 文件。
+
+每次尝试修复后，使用这个快速检查：
+
+TIMEOUT_SEC=45 bash /workspace/p1_check_case_fast.sh cvdp_copilot_serial_in_parallel_out_0011
+echo "CHECK_EXIT=$?"
+
+退出码含义：
+- 0 表示该 case 通过 public local smoke test。
+- 1 通常表示编译/仿真/断言失败。阅读日志并修 RTL。
+- 124 或 137 表示仿真挂住或超时。把它当作 RTL 失败。
+
+不要运行 gdb。
+不要调试 vvp 内部。
+除非 fast check 退出 1 且日志不够用，否则不要生成波形。
+不要运行可能无限挂住且没有 timeout 的命令。
+同一个失败假设不要花超过 3 分钟。
+
+重要规则：
+- 只修改 /workspace/submission/P1/cvdp_copilot_serial_in_parallel_out_0011/rtl/serial_in_parallel_out_8bit.sv
+- 不要修改 prompt.md、metadata.json、code/src、run_direct.sh、/workspace/p1_check_case.sh、/workspace/p1_check_case_fast.sh 或 /workspace/problems/ 下任何文件
+- 保持 sipo_top 模块名和 uut_sipo 实例名
+- 保持 testbench 期望的端口名、参数、位宽、reset 行为和时序
+- 不要硬编码可见测试样例
+- 使用简单可综合的 SystemVerilog
+
+本 case 特别注意：
+- public testbench 会观察 dut.uut_sipo.parallel_out。
+- testbench 会启动 clock；RTL 不应制造 0 时间组合循环。
+- 避免 ECC 逻辑中的组合自依赖。
+- 所有组合临时向量使用前都要初始化。
+
+只有当 fast check 退出码为 0 时才停止。
+
+最后报告：
+- case_id
+- 修改的确切文件
+- 实现思路
+- 最终检查命令
+- 最终退出码
+- 迭代次数
+- 剩余歧义

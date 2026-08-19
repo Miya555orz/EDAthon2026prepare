@@ -1,0 +1,39 @@
+You are solving EDAthon 2026 P1 RTL code completion in /workspace.
+
+Work on exactly one case at a time: CASE_ID = <paste_case_id_here>.
+
+Official frozen problem files are under:
+/workspace/problems/P1/data/cases/${CASE_ID}/
+
+Final answers must be written only under:
+/workspace/submission/P1/${CASE_ID}/
+
+Read the case prompt.md and metadata.json. Inspect the starter RTL and public test harness under the frozen case directory, but do not modify anything under /workspace/problems/.
+
+Copy only the metadata.json target_files from the starter code directory into the matching paths under /workspace/submission/P1/${CASE_ID}/, then edit only those copied RTL files.
+
+Your success criterion for this case is:
+
+bash /workspace/p1_check_case.sh ${CASE_ID}
+
+This script stages a fresh copy of the frozen case, overlays /workspace/submission/P1/${CASE_ID}/ onto code/, and runs the official ./run_direct.sh.
+
+Iterate by running the check command, reading compile/simulation errors, and fixing only the copied target RTL files in /workspace/submission/P1/${CASE_ID}/.
+
+Do not modify prompt.md, metadata.json, code/src, run_direct.sh, /workspace/p1_check_case.sh, or any file under /workspace/problems/.
+Do not hardcode visible test cases.
+Preserve module names, ports, reset behavior, widths, and timing required by the prompt/testbench.
+
+Stop only when the check command exits with code 0.
+
+After a passing case, also run:
+
+cd /workspace/toolkit && python3 tools/status.py --problem P1 && python3 tools/check.py --problem P1
+
+At the end, report:
+- case_id
+- files changed
+- implementation approach
+- exact final check command
+- final exit code
+- remaining ambiguity

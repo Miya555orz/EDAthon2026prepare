@@ -1,0 +1,71 @@
+You are solving EDAthon 2026 P1 RTL code completion.
+
+Work on exactly this case:
+
+CASE_ID = cvdp_copilot_serial_in_parallel_out_0011
+
+Official frozen problem files are under:
+
+/workspace/problems/P1/data/cases/cvdp_copilot_serial_in_parallel_out_0011/
+
+Final answer files must be written only under:
+
+/workspace/submission/P1/cvdp_copilot_serial_in_parallel_out_0011/
+
+First read:
+
+/workspace/problems/P1/data/cases/cvdp_copilot_serial_in_parallel_out_0011/prompt.md
+/workspace/problems/P1/data/cases/cvdp_copilot_serial_in_parallel_out_0011/metadata.json
+/workspace/problems/P1/data/cases/cvdp_copilot_serial_in_parallel_out_0011/code/rtl/serial_in_parallel_out_8bit.sv
+/workspace/problems/P1/data/cases/cvdp_copilot_serial_in_parallel_out_0011/code/src/.env
+/workspace/problems/P1/data/cases/cvdp_copilot_serial_in_parallel_out_0011/code/src/test_runner.py
+/workspace/problems/P1/data/cases/cvdp_copilot_serial_in_parallel_out_0011/code/src/test_sipo.py
+
+Do not modify anything under /workspace/problems/.
+
+Copy the target RTL file listed in metadata.json into:
+
+/workspace/submission/P1/cvdp_copilot_serial_in_parallel_out_0011/rtl/serial_in_parallel_out_8bit.sv
+
+Then edit only this copied RTL file.
+
+Use this fast check after every attempted fix:
+
+TIMEOUT_SEC=45 bash /workspace/p1_check_case_fast.sh cvdp_copilot_serial_in_parallel_out_0011
+echo "CHECK_EXIT=$?"
+
+Exit-code meaning:
+- 0 means this case passes the public local smoke test.
+- 1 usually means compile/simulation/assertion failed. Read the log and fix RTL.
+- 124 or 137 means simulation hung or timed out. Treat it as a failing RTL attempt.
+
+Do not run gdb.
+Do not debug vvp internals.
+Do not generate waveforms unless the fast check exits 1 and the log is insufficient.
+Do not run commands that can hang without timeout.
+Do not spend more than 3 minutes on one failed hypothesis.
+
+Important rules:
+- Modify only /workspace/submission/P1/cvdp_copilot_serial_in_parallel_out_0011/rtl/serial_in_parallel_out_8bit.sv
+- Do not modify prompt.md, metadata.json, code/src, run_direct.sh, /workspace/p1_check_case.sh, /workspace/p1_check_case_fast.sh, or any file under /workspace/problems/
+- Preserve module name sipo_top and instance name uut_sipo.
+- Preserve port names, parameters, widths, reset behavior, and timing expected by the prompt and cocotb testbench.
+- Do not hardcode visible test cases.
+- Use simple synthesizable SystemVerilog.
+
+For this case, pay special attention to:
+- The public testbench observes dut.uut_sipo.parallel_out.
+- The testbench starts the clock; RTL must not create zero-time combinational loops.
+- Avoid combinational self-dependencies in ECC logic.
+- Initialize all combinational temporary vectors before use.
+
+Stop only when the fast check exits 0.
+
+At the end, report:
+- case_id
+- exact file changed
+- implementation approach
+- exact final check command
+- final exit code
+- number of iterations
+- any remaining ambiguity

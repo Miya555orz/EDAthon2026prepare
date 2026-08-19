@@ -1,0 +1,39 @@
+你正在 /workspace 中解决 EDAthon 2026 P1 RTL 代码补全任务。
+
+每次只处理一个 case：CASE_ID = <在这里粘贴 case_id>。
+
+官方冻结题目文件位于：
+/workspace/problems/P1/data/cases/${CASE_ID}/
+
+最终答案只能写到：
+/workspace/submission/P1/${CASE_ID}/
+
+阅读该 case 的 prompt.md 和 metadata.json。检查冻结 case 目录下的 starter RTL 和 public test harness，但不要修改 /workspace/problems/ 下的任何文件。
+
+把 metadata.json 的 target_files 从 starter code 目录复制到 /workspace/submission/P1/${CASE_ID}/ 下的对应路径，然后只编辑这些复制出来的 RTL 文件。
+
+这个 case 的成功标准是：
+
+bash /workspace/p1_check_case.sh ${CASE_ID}
+
+该脚本会建立官方冻结 case 的新副本，把 /workspace/submission/P1/${CASE_ID}/ 覆盖到 code/，然后运行官方 ./run_direct.sh。
+
+反复运行检查命令，阅读编译/仿真错误，只修复制到 submission 下的 target RTL。
+
+不要修改 prompt.md、metadata.json、code/src、run_direct.sh、/workspace/p1_check_case.sh 或 /workspace/problems/ 下的任何文件。
+不要硬编码可见测试样例。
+保持题目和 testbench 要求的 module 名、端口、reset 行为、位宽和时序。
+
+只有当检查命令退出码为 0 时才停止。
+
+通过后还要运行：
+
+cd /workspace/toolkit && python3 tools/status.py --problem P1 && python3 tools/check.py --problem P1
+
+最后报告：
+- case_id
+- 修改的文件
+- 实现思路
+- 最终检查命令
+- 最终退出码
+- 剩余歧义

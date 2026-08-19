@@ -1,0 +1,9 @@
+FROM edathon-openroad-tools:local
+
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+
+RUN python3 -m pip install --no-cache-dir \
+    pytest \
+    cocotb
+
+WORKDIR /workspace
